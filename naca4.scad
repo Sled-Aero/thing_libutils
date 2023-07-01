@@ -11,7 +11,7 @@
 // h    = height [mm]            (default= 1)
 // open = close at the thin end? (default = true)
 // two equivalent example calls
- airfoil(naca = 2408, L = 60, N=1001, h = 30, open = false);
+airfoil(naca = 2408, L = 60, N=1001, h = 30, open = false);
 // airfoil(naca = [.2, .4, .32], L = 60, N=1001, h = 30, open = false);
 
 module help()
@@ -33,7 +33,8 @@ module airfoil(naca=12, L = 100, N = 81, h = 1, open = false)
 
 // this is the main function providing the airfoil data
 function airfoil_data(naca=12, L = 100, N = 81, open = false) =
-  let(Na = len(naca)!=3?NACA(naca):naca)
+  //let(Na = len(naca)!=3?NACA(naca):naca)
+  let(Na = is_num(naca) ? NACA(naca) : naca)
   let(A = [.2969, -0.126, -.3516, .2843, open?-0.1015:-0.1036])
   [for (b=[-180:360/(N):179.99])
     let (x = (1-cos(b))/2)
@@ -42,6 +43,9 @@ function airfoil_data(naca=12, L = 100, N = 81, open = false) =
 
 // helper functions
 function NACA(naca) =
+  
+  let(naca = str(naca) == "undef" ? 2412 : naca)
+
   let (M = floor(naca/1000))
   let (P = floor((naca-M*1000)/100))
   [M/100, P/10, floor(naca-M*1000-P*100)/100];
